@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
+    <include resource="com/peknight/logging/logback/defaults.xml" />
     <include resource="com/peknight/logging/logback/console-appender.xml" />
     <include resource="com/peknight/logging/logback/file-appender.xml" />
     <root level="INFO">
