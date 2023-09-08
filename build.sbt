@@ -54,7 +54,6 @@ lazy val logbackConfig = (crossProject(JSPlatform, JVMPlatform) in file("logging
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
-      "org.springframework.boot" % "spring-boot-starter-web" % "3.1.3"
     )
   )
 
