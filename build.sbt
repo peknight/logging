@@ -33,23 +33,19 @@ lazy val loggingError = (crossProject(JSPlatform, JVMPlatform) in file("logging-
   .settings(
     name := "logging-error",
     libraryDependencies ++= Seq(
+      "com.peknight" %%% "log4cats-ext" % pekExtVersion,
       "com.peknight" %%% "error-core" % pekErrorVersion,
-    ),
-  )
-  .jvmSettings(
-    libraryDependencies ++= Seq(
-      log4CatsCore,
+      "org.typelevel" %%% "cats-effect" % catsEffectVersion,
     ),
   )
 
 lazy val loggingNatchez = (crossProject(JSPlatform, JVMPlatform) in file("logging-natchez"))
+  .dependsOn(loggingError)
   .settings(commonSettings)
   .settings(
     name := "logging-natchez",
     libraryDependencies ++= Seq(
-      "com.peknight" %%% "log4cats-ext" % pekExtVersion,
       "org.tpolecat" %%% "natchez-core" % natchezVersion,
-      "com.peknight" %%% "error-core" % pekErrorVersion,
     ),
   )
 
@@ -71,6 +67,7 @@ lazy val logbackConfig = (crossProject(JSPlatform, JVMPlatform) in file("logging
     ),
   )
 
+val catsEffectVersion = "3.5.7"
 val log4CatsVersion = "2.7.0"
 val natchezVersion = "0.3.7"
 val pekVersion = "0.1.0-SNAPSHOT"
