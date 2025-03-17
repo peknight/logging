@@ -27,7 +27,7 @@ trait EitherTSyntax:
           error = either.fold(Error.apply, _ => Success)
           value = either.toOption
           level = if either.isRight then successLevel else errorLevel
-          _ <- logger._log(level, error.throwable)(s"$traceId|$name|$duration|${error.errorType}|${error.message}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message")
+          _ <- logger._log(level, error.throwable)(s"$traceId|$name|$duration|${error.errorType}|${error.message}|${error.showValue.getOrElse("")}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message")
         yield
           value.toRight(error)
       EitherT(run.asError.map(_.flatten))
