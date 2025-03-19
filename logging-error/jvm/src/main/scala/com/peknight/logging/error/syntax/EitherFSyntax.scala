@@ -2,6 +2,7 @@ package com.peknight.logging.error.syntax
 
 import cats.Show
 import cats.effect.{Clock, Sync}
+import cats.syntax.applicative.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
 import cats.syntax.show.*
@@ -14,7 +15,8 @@ import org.typelevel.log4cats.extras.LogLevel
 trait EitherFSyntax:
   extension [F[_], A, B] (f: F[Either[A, B]])
     def log[Param](traceId: String = "", name: String = "", message: String = "", param: Option[Param] = None,
-                   successLevel: LogLevel = LogLevel.Info, errorLevel: LogLevel = LogLevel.Error)
+                   successLevel: Option[LogLevel] = Some(LogLevel.Info),
+                   errorLevel: Option[LogLevel] = Some(LogLevel.Error))
                   (using sync: Sync[F], logger: Logger[F], paramShow: Show[Param], valueShow: Show[B])
     : F[Either[Error, B]] =
       val run =
@@ -26,7 +28,9 @@ trait EitherFSyntax:
           error = either.fold(Error.apply, _ => Success)
           value = either.toOption
           level = if either.isRight then successLevel else errorLevel
-          _ <- logger._log(level, error.throwable)(s"$traceId|$name|$duration|${error.errorType}|${error.message}|${error.showValue.getOrElse("")}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message")
+          _ <- level.fold(().pure)(level => logger._log(level, error.throwable)(
+            s"$traceId|$name|$duration|${error.errorType}|${error.message}|${error.showValue.getOrElse("")}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message"
+          ))
         yield
           value.toRight(error)
       run.asError.map(_.flatten)
