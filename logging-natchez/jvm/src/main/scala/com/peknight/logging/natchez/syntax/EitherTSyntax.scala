@@ -13,7 +13,8 @@ import org.typelevel.log4cats.extras.LogLevel
 trait EitherTSyntax:
   extension [F[_], A, B] (eitherT: EitherT[F, A, B])
     def log[Param](name: String = "", message: String = "", param: Option[Param] = None,
-                   successLevel: LogLevel = LogLevel.Info, errorLevel: LogLevel = LogLevel.Error)
+                   successLevel: Option[LogLevel] = Some(LogLevel.Info),
+                   errorLevel: Option[LogLevel] = Some(LogLevel.Error))
                   (using sync: Sync[F], logger: Logger[F], trace: Trace[F], paramShow: Show[Param], valueShow: Show[B])
     : EitherT[F, Error, B] =
       for 
