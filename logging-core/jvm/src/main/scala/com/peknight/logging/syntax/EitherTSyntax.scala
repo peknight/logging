@@ -1,10 +1,10 @@
-package com.peknight.logging.error.syntax
+package com.peknight.logging.syntax
 
 import cats.Show
 import cats.data.EitherT
 import cats.effect.Sync
 import com.peknight.error.Error
-import com.peknight.logging.error.syntax.eitherF.log as fLog
+import com.peknight.logging.syntax.eitherF.log as fLog
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.extras.LogLevel
 

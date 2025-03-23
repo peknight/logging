@@ -1,14 +1,14 @@
-package com.peknight.logging.error.syntax
+package com.peknight.logging.syntax
 
 import cats.Show
 import cats.effect.{Clock, Sync}
-import cats.syntax.applicative.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
-import cats.syntax.show.*
+import cats.syntax.option.*
+import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.asError
-import com.peknight.error.{Error, Success}
-import com.peknight.log4cats.ext.syntax.logger.log as _log
+import com.peknight.error.syntax.either.asError
+import com.peknight.logging.syntax.either.log as eLog
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.extras.LogLevel
 
@@ -22,17 +22,12 @@ trait EitherFSyntax:
       val run =
         for
           startTime <- Clock[F].monotonic
-          either <- f
+          either <- f.asError.map(_.flatMap(_.asError))
           endTime <- Clock[F].monotonic
-          duration = endTime - startTime
-          error = either.fold(Error.apply, _ => Success)
-          value = either.toOption
-          level = if either.isRight then successLevel else errorLevel
-          _ <- level.fold(().pure)(level => logger._log(level, error.throwable)(
-            s"$traceId|$name|$duration|${error.errorType}|${error.message}|${error.showValue.getOrElse("")}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message"
-          ))
+          duration = (endTime - startTime).some
+          _ <- either.eLog(traceId, name, message, duration, param, successLevel, errorLevel)
         yield
-          value.toRight(error)
+          either
       run.asError.map(_.flatten)
   end extension
 end EitherFSyntax

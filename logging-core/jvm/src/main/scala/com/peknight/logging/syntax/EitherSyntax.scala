@@ -1,0 +1,31 @@
+package com.peknight.logging.syntax
+
+import cats.effect.Sync
+import cats.syntax.applicative.*
+import cats.syntax.functor.*
+import cats.{Applicative, Show}
+import com.peknight.error.Success
+import com.peknight.error.syntax.either.asError
+import com.peknight.log4cats.ext.syntax.logger.log as lLog
+import com.peknight.logging.message.apply as msg
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.extras.LogLevel
+
+import scala.concurrent.duration.Duration
+
+trait EitherSyntax:
+  extension [A, B] (either: Either[A, B])
+    def log[F[_], Param](traceId: String = "", name: String = "", message: String = "",
+                         duration: Option[Duration] = None,
+                         param: Option[Param] = None,
+                         successLevel: Option[LogLevel] = Some(LogLevel.Info),
+                         errorLevel: Option[LogLevel] = Some(LogLevel.Error))
+                        (using applicative: Applicative[F], logger: Logger[F], paramShow: Show[Param], valueShow: Show[B])
+    : F[Unit] =
+      val e = either.asError
+      val error = e.left.getOrElse(Success)
+      val level = if either.isRight then successLevel else errorLevel
+      level.fold(().pure)(level => logger.lLog(level, error.throwable)(msg(e, traceId, name, message, duration, param)))
+  end extension
+end EitherSyntax
+object EitherSyntax extends EitherSyntax

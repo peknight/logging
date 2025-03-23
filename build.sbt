@@ -17,8 +17,8 @@ lazy val commonSettings = Seq(
 
 lazy val logging = (project in file("."))
   .aggregate(
-    loggingError.jvm,
-    loggingError.js,
+    loggingCore.jvm,
+    loggingCore.js,
     loggingNatchez.jvm,
     loggingNatchez.js,
     loggingConfig,
@@ -28,10 +28,10 @@ lazy val logging = (project in file("."))
     name := "logging",
   )
 
-lazy val loggingError = (crossProject(JSPlatform, JVMPlatform) in file("logging-error"))
+lazy val loggingCore = (crossProject(JSPlatform, JVMPlatform) in file("logging-core"))
   .settings(commonSettings)
   .settings(
-    name := "logging-error",
+    name := "logging-core",
     libraryDependencies ++= Seq(
       "com.peknight" %%% "log4cats-ext" % pekExtVersion,
       "com.peknight" %%% "error-core" % pekErrorVersion,
@@ -40,7 +40,7 @@ lazy val loggingError = (crossProject(JSPlatform, JVMPlatform) in file("logging-
   )
 
 lazy val loggingNatchez = (crossProject(JSPlatform, JVMPlatform) in file("logging-natchez"))
-  .dependsOn(loggingError)
+  .dependsOn(loggingCore)
   .settings(commonSettings)
   .settings(
     name := "logging-natchez",
