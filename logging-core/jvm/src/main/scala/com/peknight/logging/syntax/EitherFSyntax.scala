@@ -14,7 +14,7 @@ import org.typelevel.log4cats.extras.LogLevel
 
 trait EitherFSyntax:
   extension [F[_], A, B] (f: F[Either[A, B]])
-    def log[Param](traceId: String = "", name: String = "", message: String = "", param: Option[Param] = None,
+    def log[Param](name: String = "", param: Option[Param] = None, traceId: String = "", message: String = "",
                    successLevel: Option[LogLevel] = Some(LogLevel.Info),
                    errorLevel: Option[LogLevel] = Some(LogLevel.Error))
                   (using sync: Sync[F], logger: Logger[F], paramShow: Show[Param], valueShow: Show[B])
@@ -25,7 +25,7 @@ trait EitherFSyntax:
           either <- f.asError.map(_.flatMap(_.asError))
           endTime <- Clock[F].monotonic
           duration = (endTime - startTime).some
-          _ <- either.eLog(traceId, name, message, duration, param, successLevel, errorLevel)
+          _ <- either.eLog(name, param, traceId, message, duration, successLevel, errorLevel)
         yield
           either
       run.asError.map(_.flatten)

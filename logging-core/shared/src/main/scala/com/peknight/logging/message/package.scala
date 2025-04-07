@@ -8,11 +8,11 @@ import scala.concurrent.duration.*
 
 package object message:
   def apply[A: Show, Param: Show](either: Either[Error, A],
-                                  traceId: String = "",
                                   name: String = "",
+                                  param: Option[Param] = None,
+                                  traceId: String = "",
                                   message: String = "",
-                                  duration: Option[Duration] = None,
-                                  param: Option[Param] = None): String =
+                                  duration: Option[Duration] = None): String =
     val error = either.fold(Error.apply, _ => Success)
     val value = either.toOption
     s"$traceId|$name|${duration.map(format).getOrElse("")}|${error.errorType}|${error.message}|${error.showValue.getOrElse("")}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message"
