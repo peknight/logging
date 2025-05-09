@@ -1,6 +1,6 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.6.2"
+ThisBuild / scalaVersion := "3.7.0"
 
 ThisBuild / organization := "com.peknight"
 
@@ -67,9 +67,9 @@ lazy val logbackConfig = (crossProject(JSPlatform, JVMPlatform) in file("logging
     ),
   )
 
-val catsEffectVersion = "3.5.7"
+val catsEffectVersion = "3.6.1"
 val log4CatsVersion = "2.7.0"
-val natchezVersion = "0.3.7"
+val natchezVersion = "0.3.8"
 val pekVersion = "0.1.0-SNAPSHOT"
 val pekExtVersion = pekVersion
 val pekErrorVersion = pekVersion
