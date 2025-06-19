@@ -1,8 +1,24 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.7.0"
+ThisBuild / scalaVersion := "3.7.1"
 
 ThisBuild / organization := "com.peknight"
+
+ThisBuild / publishTo := {
+  val nexus = "https://nexus.peknight.com/repository"
+  if (isSnapshot.value)
+    Some("snapshot" at s"$nexus/maven-snapshots/")
+  else
+    Some("releases" at s"$nexus/maven-releases/")
+}
+
+ThisBuild / credentials ++= Seq(
+  Credentials(Path.userHome / ".sbt" / ".credentials")
+)
+
+ThisBuild / resolvers ++= Seq(
+  "Pek Nexus" at "https://nexus.peknight.com/repository/maven-public/",
+)
 
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
@@ -68,9 +84,11 @@ lazy val logbackConfig = (crossProject(JSPlatform, JVMPlatform) in file("logging
   )
 
 val catsEffectVersion = "3.6.1"
-val log4CatsVersion = "2.7.0"
+val log4CatsVersion = "2.7.1"
 val natchezVersion = "0.3.8"
+
 val pekVersion = "0.1.0-SNAPSHOT"
 val pekExtVersion = pekVersion
 val pekErrorVersion = pekVersion
+
 val log4CatsCore = "org.typelevel" %% "log4cats-core" % log4CatsVersion
