@@ -4,7 +4,7 @@ import cats.Show
 import cats.data.EitherT
 import cats.effect.Sync
 import com.peknight.error.Error
-import com.peknight.error.syntax.applicativeError.asError
+import com.peknight.error.syntax.applicativeError.faeLiftET
 import com.peknight.logging.syntax.eitherT.log as lLog
 import natchez.Trace
 import org.typelevel.log4cats.Logger
@@ -18,7 +18,7 @@ trait EitherTSyntax:
                   (using sync: Sync[F], logger: Logger[F], trace: Trace[F], paramShow: Show[Param], valueShow: Show[B])
     : EitherT[F, Error, B] =
       for 
-        traceId <- EitherT(trace.traceId.asError).map(_.getOrElse(""))
+        traceId <- trace.traceId.faeLiftET.map(_.getOrElse(""))
         value <- eitherT.lLog[Param](name, param, traceId, message, successLevel, errorLevel)
       yield
         value
