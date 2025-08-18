@@ -75,6 +75,7 @@ lazy val loggingConfig = (project in file("logging-config"))
   .settings(commonSettings)
   .settings(
     name := "logging-config",
+
   )
 
 lazy val logbackConfig = (crossProject(JSPlatform, JVMPlatform) in file("logging-config/logback-config"))
