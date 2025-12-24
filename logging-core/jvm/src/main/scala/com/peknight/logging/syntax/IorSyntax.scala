@@ -5,7 +5,7 @@ import cats.syntax.applicative.*
 import cats.{Applicative, Show}
 import com.peknight.error.Success
 import com.peknight.error.syntax.ior.asError
-import com.peknight.log4cats.ext.syntax.logger.log as lLog
+import com.peknight.log4cats.syntax.logger.log as lLog
 import com.peknight.logging.message.ior as msg
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.extras.LogLevel

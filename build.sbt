@@ -16,7 +16,7 @@ lazy val logging = (project in file("."))
 lazy val loggingCore = (crossProject(JVMPlatform, JSPlatform) in file("logging-core"))
   .settings(name := "logging-core")
   .settings(crossDependencies(
-    peknight.ext.log4Cats,
+    peknight.log4Cats,
     peknight.error,
     typelevel.catsEffect,
   ))
