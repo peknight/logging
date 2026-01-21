@@ -7,4 +7,5 @@ package object syntax:
   object ior extends IorSyntax
   object iorF extends IorFSyntax
   object iorT extends IorTSyntax
+  object monadError extends MonadErrorSyntax
 end syntax
