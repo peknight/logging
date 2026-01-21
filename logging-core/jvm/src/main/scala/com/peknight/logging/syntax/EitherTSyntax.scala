@@ -10,12 +10,17 @@ import org.typelevel.log4cats.extras.LogLevel
 
 trait EitherTSyntax:
   extension [F[_], A, B] (eitherT: EitherT[F, A, B])
-    def log[Param](name: String = "", param: Option[Param] = None, traceId: String = "", message: String = "",
+    def log[Param](name: String = "", param: Option[Param] = None, traceId: String = "",
+                   startMessage: String = "", message: String = "",
+                   startLevel: Option[LogLevel] = None,
                    successLevel: Option[LogLevel] = Some(LogLevel.Info),
-                   errorLevel: Option[LogLevel] = Some(LogLevel.Error))
+                   errorLevel: Option[LogLevel] = Some(LogLevel.Error),
+                   startLogParam: Boolean = true,
+                   logParam: Boolean = true)
                   (using sync: Sync[F], logger: Logger[F], paramShow: Show[Param], valueShow: Show[B])
     : EitherT[F, Error, B] =
-      EitherT(eitherT.value.fLog[Param](name, param, traceId, message, successLevel, errorLevel))
+      EitherT(eitherT.value.fLog[Param](name, param, traceId, startMessage, message, startLevel, successLevel,
+        errorLevel, startLogParam, logParam))
   end extension
 end EitherTSyntax
 object EitherTSyntax extends EitherTSyntax

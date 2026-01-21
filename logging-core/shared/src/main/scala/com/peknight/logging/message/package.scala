@@ -36,6 +36,9 @@ package object message:
                                   duration: Option[Duration] = None): String =
     s"$traceId|$name|${duration.map(format).getOrElse("")}|${error.errorType}|${error.message}|${error.showValue.getOrElse("")}|${param.map(_.show).getOrElse("")}|${value.map(_.show).getOrElse("")}|$message"
 
+  def start[Param: Show](name: String = "", param: Option[Param] = None, traceId: String = "", message: String = ""): String =
+    s"$traceId|$name||Start|Start||${param.map(_.show).getOrElse("")}||$message"
+
   private def format(duration: Duration): String =
     if !duration.isFinite then "∞"
     else if duration > 10.days then s"${duration.toDays}days#${duration.toNanos}"

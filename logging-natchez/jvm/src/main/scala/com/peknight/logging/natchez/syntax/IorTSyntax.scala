@@ -12,14 +12,19 @@ import org.typelevel.log4cats.extras.LogLevel
 
 trait IorTSyntax:
   extension [F[_], A, B] (iorT: IorT[F, A, B])
-    def log[Param](name: String = "", param: Option[Param] = None, message: String = "",
+    def log[Param](name: String = "", param: Option[Param] = None,
+                   startMessage: String = "", message: String = "",
+                   startLevel: Option[LogLevel] = None,
                    successLevel: Option[LogLevel] = Some(LogLevel.Info),
-                   errorLevel: Option[LogLevel] = Some(LogLevel.Error))
+                   errorLevel: Option[LogLevel] = Some(LogLevel.Error),
+                   startLogParam: Boolean = true,
+                   logParam: Boolean = true)
                   (using sync: Sync[F], logger: Logger[F], trace: Trace[F], paramShow: Show[Param], valueShow: Show[B])
     : IorT[F, Error, B] =
       for 
         traceId <- trace.traceId.asIT.map(_.getOrElse(""))
-        value <- iorT.lLog[Param](name, param, traceId, message, successLevel, errorLevel)
+        value <- iorT.lLog[Param](name, param, traceId, startMessage, message, startLevel, successLevel, errorLevel,
+          startLogParam, logParam)
       yield
         value
   end extension
