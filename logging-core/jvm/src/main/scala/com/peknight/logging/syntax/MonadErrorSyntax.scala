@@ -19,8 +19,8 @@ trait MonadErrorSyntax:
                    logParam: Boolean = true)
                   (using sync: Sync[F], logger: Logger[F], paramShow: Show[Param], valueShow: Show[A])
     : F[A] =
-      fa.attempt.fLog[Param](name, param, traceId, startMessage, message, startLevel, successLevel, errorLevel, startLogParam,
-        logParam).rethrow
+      fa.attempt.fLog[Param](name, param, traceId, startMessage, message, startLevel, successLevel, errorLevel,
+        startLogParam, logParam).rethrow
   end extension
 end MonadErrorSyntax
 object MonadErrorSyntax extends MonadErrorSyntax
